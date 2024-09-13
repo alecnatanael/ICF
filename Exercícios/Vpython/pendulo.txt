@@ -1,0 +1,41 @@
+Web VPython 3.2
+from vpython import *
+
+#Condições iniciais
+theta = pi/6
+L = 20
+w = 2
+
+#Conexão
+conex = vector(0,0,0)
+conex.y = cos(theta)*L
+box(pos=conex, size=vector(2,0.1,2), color=color.green)
+print(conex.y)
+
+#Bola
+x = sin(theta)*L
+bola = sphere(pos=vector(x,0,0), radius=1, color=color.red, make_trail =True)
+
+# Fio
+fio = cylinder(pos=conex, axis=bola.pos-conex, radius = 0.1, color=color.yellow)
+
+
+# Outras informações
+R = bola.pos.x - conex.x #raio da curva
+print(R)
+
+
+t = 0
+tfinal = 60
+dt = 0.010
+w = 2
+
+
+#Movimento
+while t < tfinal:
+    rate(200)
+    t = t + dt
+    bola.pos = vec(R*cos(w*t), 0, R*sin(w*t))
+    fio.axis = bola.pos-conex
+    
+    

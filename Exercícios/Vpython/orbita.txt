@@ -1,0 +1,60 @@
+Web VPython 3.2
+from vpython import *
+
+#Dados
+G = 6.67e-11
+Me = 5.97e24
+ms = 1.0e24
+v0s = vector(0, 0, 3e3)
+v0t = vector(0,100,100)
+Re = 6.37e6
+
+
+#Objetos
+Terra = sphere(pos=vec(0,0,0), radius=Re, texture=textures.earth, make_trail=True)
+Terra.m = Me #Massa da Terra
+Terra.v = v0t #Velocidade inicial da Terra
+Terra.p = Terra.m*Terra.v #Momento linear da Terra
+omega_e = 1.0
+
+Satelite = sphere(pos=vec(5*Re,0,0), radius=0.2*Re, color=color.white, make_trail=True)
+Satelite.m = ms #Massa do Satélite
+Satelite.v = v0s #Velocidade inicial do Satélite
+Satelite.p = Satelite.m*Satelite.v #Momento linear do Satélite
+
+print(Satelite.pos - Terra.pos)
+
+#Dinâmica
+t = 0.0
+tf = 100.0
+dt = 0.01
+
+while t < tf:
+    rate(300)
+    
+    #Vetor posição satelite-terra
+    rv = Satelite.pos - Terra.pos
+    
+    #Vetor posição terra-satelite
+    vr = Terra.pos - Satelite.pos
+    
+    
+    #Força da terra sobre o satélite
+    F = -((G*Terra.m*Satelite.m)/(mag(rv)**2))*norm(rv) #mag: modulo de rv; norm: transforma rv em um versor
+    
+    #Atualização do Momento linear do Satélite
+    Satelite.p = Satelite.p + (F*t)
+    
+    #Força do satélite sobre a Terra:
+    F2 = -((G*Terra.m*Satelite.m)/(mag(vr)**2))*norm(vr)
+    
+    #Atualização do Momento linear da Terra
+    Terra.p = Terra.p + (F2*t)
+
+    #Atualização das Posições
+    Satelite.pos = Satelite.pos + ((Satelite.p)/(Satelite.m))*t
+    Terra.pos = Terra.pos + ((Terra.p)/(Terra.m))*t
+    
+    Terra.rotate(angle=omega_e*dt, axis=vector(0,1,0))
+    
+    t += dt

@@ -1,0 +1,58 @@
+Web VPython 3.2
+from vpython import *
+
+#Condições iniciais e dados
+Vini = 600
+theta = radians(70)
+v0 = vector(Vini*cos(theta),Vini*sin(theta), 0)
+print(v0)
+R = 5       #Raio da esfera
+g = 9.8     #Aceleração da gravidade
+massa = 1 
+rho = 0.2   #Densidade do ar
+C = 0.001   #Coeficiente de arrasto da esfera
+A = pi*R**2 #Área de referência da esfera
+
+#Objetos
+
+bola = sphere(pos=vec(-400,6,0), radius=R, color=color.blue, make_trail=True)
+bola.m = massa
+bola.v = v0
+bola.p = bola.m*bola.v  #Momento Linear da bola
+
+piso = box(pos=vec(0,0,0), size=vec(1000,2,100), color=color.orange)
+
+#Animação
+
+t = 0.0
+tf = 100.0
+dt = 0.01
+
+while t < tf:
+    rate(100)
+    
+    #Vetores velocidade horizontal e vertical
+    vx = vector(bola.v.x, 0, 0)
+    vy = vector(0, bola.v.y, 0)
+    
+    #Força da resistência do ar no eixo x:
+    Farx = (-1/2)*rho*A*C*(mag(vx)**2)*norm(vx)
+    
+    #Força da resistência do ar no eixo y:
+    Fary = (-1/2)*rho*A*C*(mag(vy)**2)*norm(vy)
+    
+    #Atualização do momento linear da bola:
+    bola.p = bola.v*bola.m
+    bola.p = bola.p + (Farx*t) + (Fary*t)
+    
+    #Atualização das velocidades da bola:
+    bola.v = bola.p/bola.m
+    bola.v.y = bola.v.y - g*t #Adicionando a aceleração da gravidade no eixo y
+    
+    
+    #Atualização da posição da bola:
+    bola.pos = bola.pos + bola.v*t
+    
+    t += dt
+    
+    
