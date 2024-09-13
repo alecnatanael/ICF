@@ -1,0 +1,131 @@
+Web VPython 3.2
+from vpython import *
+
+
+#### VELOCIDADE ANGULAR = 0 ####
+
+#Constantes e iniciais
+G = 1
+m = 1
+M = 100
+R = 1.0
+Rs = 0.2
+va = vec(0.1,0,0)
+
+vs = vec(0, 1.5, 0)
+
+#Objetos
+Terra = sphere(pos=vec(0,0,0), radius=R, texture=textures.earth, make_trail=True)
+Terra.m = M #Massa
+Terra.v = va #Velocidade planeta
+Terra.p = Terra.m*Terra.v #Momento linear
+
+
+Satelite = sphere(pos=vec(10,0,0), radius=Rs, color=color.white, make_trail=True)
+Satelite.m = m #Massa do Satélite
+Satelite.v = vs #Velocidade inicial do Satélite
+Satelite.p = Satelite.m*Satelite.v #Momento linear do Satélite
+
+
+#Dinâmica
+t = 0.0
+tf = 100.0
+dt = 0.001
+
+while t < tf:
+    rate(30)
+    
+    #Vetor posição satelite-terra
+    rv = Satelite.pos - Terra.pos
+    
+    #Vetor posição terra-satelite
+    vr = Terra.pos - Satelite.pos
+    
+    
+    #Força da terra sobre o satélite
+    F = (-((G*Terra.m*Satelite.m)/(mag(rv)**2))*norm(rv)) #mag: modulo de rv; norm: transforma rv em um versor
+    
+    #Atualização do Momento linear do Satélite
+    Satelite.p = Satelite.p + (F*t)
+    
+    #Força do satélite sobre a Terra:
+    F2 = -((G*Terra.m*Satelite.m)/(mag(vr)**2))*norm(vr)
+    
+    #Atualização do Momento linear da Terra
+    Terra.p = Terra.p + (F2*t)
+
+    #Atualização das Posições
+    Satelite.pos = Satelite.pos + ((Satelite.p)/(Satelite.m))*t
+    Terra.pos = Terra.pos + ((Terra.p)/(Terra.m))*t
+    
+    
+    t += dt
+
+
+
+    #### VELOCIDADE ANGULAR = 0.2 ###
+
+    
+#Constantes e iniciais
+G = 1
+m = 1
+M = 100
+R = 1.0
+Rs = 0.2
+va = vec(0.1,0,0)
+
+omega = 0.2
+vs = vec(0, 1.5, 0)
+
+#Objetos
+Terra = sphere(pos=vec(0,0,0), radius=R, texture=textures.earth, make_trail=True)
+Terra.m = M #Massa
+Terra.v = va #Velocidade planeta
+Terra.p = Terra.m*Terra.v #Momento linear
+
+
+Satelite = sphere(pos=vec(10,0,0), radius=Rs, color=color.white, make_trail=True)
+Satelite.m = m #Massa do Satélite
+Satelite.v = vs #Velocidade inicial do Satélite
+Satelite.p = Satelite.m*Satelite.v #Momento linear do Satélite
+
+
+#Dinâmica
+t = 0.0
+tf = 100.0
+dt = 0.001
+
+while t < tf:
+    rate(30)
+    
+    #Vetor posição satelite-terra
+    rv = Satelite.pos - Terra.pos
+    
+    #Vetor posição terra-satelite
+    vr = Terra.pos - Satelite.pos
+    
+    
+    #Força da terra sobre o satélite
+    F = (-((G*Terra.m*Satelite.m)/(mag(rv)**2))*norm(rv)) + m*(omega**2)*mag(rv)*norm(rv)
+    
+    #Atualização do Momento linear do Satélite
+    Satelite.p = Satelite.p + (F*t)
+    
+    #Força do satélite sobre a Terra:
+    F2 = -((G*Terra.m*Satelite.m)/(mag(vr)**2))*norm(vr)
+    
+    #Atualização do Momento linear da Terra
+    Terra.p = Terra.p + (F2*t)
+
+    #Atualização das Posições
+    Satelite.pos = Satelite.pos + ((Satelite.p)/(Satelite.m))*t
+    Terra.pos = Terra.pos + ((Terra.p)/(Terra.m))*t
+    
+    
+    t += dt
+
+    
+    #### CONCLUSÕES ####
+    
+    A Trajetória prevista é que o satélite saia de órbita em algum momento.
+    Percebe-se, executando as simulações, que o satélite tem muito mais dificuldade para escapar da órbita sem a ajuda da velocidade angular!
